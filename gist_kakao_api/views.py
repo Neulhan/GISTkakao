@@ -9,15 +9,6 @@ def home(request):
     return render(request, 'home.html')
 
 
-@api_view(['GET'])
-def drf_test_get(request):
-    if request.method == 'GET':
-        text = 'get success'
-        version = '2.0'
-
-        return Response({'version': version, 'template': {'outputs': [{'simpleText': {'text': text}}]}})
-
-
 @api_view(['POST'])
 def drf_test_post(request):
     if request.method == 'POST':
