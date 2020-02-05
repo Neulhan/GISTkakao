@@ -1,0 +1,24 @@
+{
+  "prod": {
+    "aws_region": "ap-northeast-2",
+    "django_settings": "GIST_kakao_channel.settings",
+    "profile_name": "default",
+    "project_name": "gist-kakao-chan",
+    "runtime": "python3.7",
+    "s3_bucket": "zappa-928so5avf",
+    "log_level": "WARNING",
+    "memory_size": 128,
+    "timeout_seconds": 30
+  },
+  "dev9": {
+    "aws_region": "ap-northeast-2",
+    "django_settings": "GIST_kakao_channel.settings",
+    "profile_name": "default",
+    "project_name": "gist-kakao-chan",
+    "runtime": "python3.6",
+    "s3_bucket": "zappa-928so5avf",
+    "log_level": "WARNING",
+    "memory_size": 128,
+    "timeout_seconds": 30
+  }
+}

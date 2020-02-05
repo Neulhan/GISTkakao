@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from gist_kakao_api import urls
+from gist_kakao_api import urls, views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(urls)),
+    path('/', views.home2),
 ]

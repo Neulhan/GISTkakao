@@ -5,8 +5,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
+@api_view(['GET'])
 def home(request):
-    return render(request, 'home.html')
+    return Response('zappa-gist-success')
+
+
+@api_view(['GET'])
+def home2(request):
+    return Response('zappa-gist-success2')
 
 
 @api_view(['POST'])
@@ -66,4 +72,68 @@ def drf_test_post(request):
                 'outputs': card_list
             }
         }
+        return Response(context)
+
+
+@api_view(['POST'])
+def drf_weather(request):
+    if request.method == 'POST':
+        version = '2.0'
+        card_list = []
+        simple_text = {
+            "simpleText": {
+                "text": "날씨 API 호출"
+            }
+        }
+        card_list.append(simple_text)
+
+        context = {
+            'version': version,
+            'template': {
+                'outputs': card_list
+            }
+        }
+        return Response(context)
+
+
+@api_view(['POST'])
+def drf_schedule(request):
+    if request.method == 'POST':
+        version = '2.0'
+        card_list = []
+        simple_text = {
+            "simpleText": {
+                "text": "학사일정 API 호출"
+            }
+        }
+        card_list.append(simple_text)
+
+        context = {
+            'version': version,
+            'template': {
+                'outputs': card_list
+            }
+        }
+        return Response(context)
+
+
+@api_view(['POST'])
+def drf_diet(request):
+    if request.method == 'POST':
+        version = '2.0'
+        card_list = []
+        simple_text = {
+            "simpleText": {
+                "text": "학식 API 호출"
+            }
+        }
+        card_list.append(simple_text)
+
+        context = {
+            'version': version,
+            'template': {
+                'outputs': card_list
+            }
+        }
+
         return Response(context)
