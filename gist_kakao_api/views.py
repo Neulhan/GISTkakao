@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -137,3 +138,39 @@ def drf_diet(request):
         }
 
         return Response(context)
+
+
+@api_view(['POST'])
+def test(request):
+    params = request.data['action']['detailParams']
+
+    korean = int(params['점수']['origin'])
+    math = int(params['점수1']['origin'])
+    english = int(params['점수2']['origin'])
+    science1 = int(params['점수3']['origin'])
+    science2 = int(params['점수4']['origin'])
+    version = '2.0'
+
+    card_list = []
+    simple_text = {
+        "simpleText": {
+            "text": f"""
+            국어: {korean}
+            수학: {math}
+            영어: {english}
+            탐구1: {science1}
+            탐구2: {science2}
+            총합: {korean+math+english+science1+science2})
+            합격여부: 합격
+            """
+        }
+    }
+    card_list.append(simple_text)
+
+    context = {
+        'version': version,
+        'template': {
+            'outputs': card_list
+        }
+    }
+    return Response(context)

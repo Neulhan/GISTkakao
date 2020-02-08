@@ -10,4 +10,5 @@ urlpatterns = [
     path('drf-diet', views.drf_diet),
     path('drf-schedule', views.drf_schedule),
     path('drf-weather', views.drf_weather),
+    path('test', views.test),
 ]
