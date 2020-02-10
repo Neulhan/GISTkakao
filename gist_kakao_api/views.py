@@ -5,6 +5,8 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from gist_kakao_api.weatherAPI import *
+
 
 @api_view(['GET'])
 def home(request):
@@ -81,9 +83,16 @@ def drf_weather(request):
     if request.method == 'POST':
         version = '2.0'
         card_list = []
+        weather_data = getUltraSrtNcst()
+        weather_data.update(getVilageFcst())
+        print(weather_data)
+        a = {'강수형태': '0', '습도': '70', '1시간 강수량': '0', '기온': '10',
+             '풍속(동서)': '0.6', '풍향': '270', '풍속(남북)': '0', '풍속': '0.6',
+             '강수확률': '0', '하늘상태': '1', '3시간 기온': '3'}
+        text = f"오늘의 GIST 날씨\n 기온 : {weather_data['기온']}\n습도 : {weather_data['습도']}\n강수확률 : {weather_data['강수확률']}"
         simple_text = {
             "simpleText": {
-                "text": "날씨 API 호출"
+                "text": text
             }
         }
         card_list.append(simple_text)
@@ -104,7 +113,7 @@ def drf_schedule(request):
         card_list = []
         simple_text = {
             "simpleText": {
-                "text": "학사일정 API 호출"
+                "text": "2월 학사일정\n12-23(월) ~ 02-28(금)동계방학\n02-03(월) ~ 02-07(금)1학기 전과지원서 제출\n02-07(금)겨울학기 성적 제출마감\n02-14(금)2019학년도 학위수여식\n02-17(월) ~ 02-26(수)GIST대학 신입생 오리엔테이션\n02-17(월) ~ 02-21(금)2020학년도 1학기 수강신청, 복학원 제출 및 등록\n02-24(월)2020학년도 1학기 대학원 신입생 오리엔테이션\n02-24(월) ~ 02-25(화)2020학년도 1학기 대학원 신입생 수강신청\n02-24(월) ~ 02-25(화)2020학년도 1학기 GIST대학 신입생 수강신청\n02-26(수)입학식"
             }
         }
         card_list.append(simple_text)
@@ -125,7 +134,7 @@ def drf_diet(request):
         card_list = []
         simple_text = {
             "simpleText": {
-                "text": "학식 API 호출"
+                "text": "학식 API 준비중입니다"
             }
         }
         card_list.append(simple_text)
