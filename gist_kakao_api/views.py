@@ -5,7 +5,16 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from gist_kakao_api.dietAPI import get_cafeteria1, get_cafeteria2
+from gist_kakao_api.models import CafeteriaMenu
 from gist_kakao_api.weatherAPI import *
+
+API_END_POINT = 'https://m14fvnt238.execute-api.ap-northeast-2.amazonaws.com/dev10'
+
+
+def test_img(request):
+    context = {'cafe': CafeteriaMenu.objects.all()}
+    return render(request, 'home.html', context)
 
 
 @api_view(['GET'])
@@ -89,11 +98,22 @@ def drf_weather(request):
         a = {'강수형태': '0', '습도': '70', '1시간 강수량': '0', '기온': '10',
              '풍속(동서)': '0.6', '풍향': '270', '풍속(남북)': '0', '풍속': '0.6',
              '강수확률': '0', '하늘상태': '1', '3시간 기온': '3'}
-        text = f"오늘의 GIST 날씨\n 기온 : {weather_data['기온']}\n습도 : {weather_data['습도']}\n강수확률 : {weather_data['강수확률']}"
+
+        try:
+            text = f"오늘의 GIST 날씨\n 기온 : {weather_data['기온']}\n습도 : {weather_data['습도']}"
+        except KeyError as e:
+            print(KeyError)
+            text = f"오늘의 GIST 날씨\n 기온 : {weather_data['3시간 기온']}\n습도 : {weather_data['습도']}"
+
+        if weather_data['강수형태'] == '1':
+            rain_text = f"\n현재날씨 : 비"
+        else:
+            rain_text = f"\n강수확률 : {weather_data['강수확률']}"
+        text += rain_text
         simple_text = {
-            "simpleText": {
-                "text": text
-            }
+                "simpleText": {
+                    "text": text
+                }
         }
         card_list.append(simple_text)
 
@@ -128,16 +148,20 @@ def drf_schedule(request):
 
 
 @api_view(['POST'])
-def drf_diet(request):
+def drf_diet_1(request):
     if request.method == 'POST':
+        print('diet api call ->')
+        cafe1 = get_cafeteria1()
         version = '2.0'
         card_list = []
-        simple_text = {
-            "simpleText": {
-                "text": "학식 API 준비중입니다"
+        simple_image1 = {
+            "simpleImage": {
+                "imageUrl": cafe1.menu_img,
+                "altText": cafe1.title
             }
         }
-        card_list.append(simple_text)
+
+        card_list.append(simple_image1)
 
         context = {
             'version': version,
@@ -146,6 +170,32 @@ def drf_diet(request):
             }
         }
 
+        print(context)
+        return Response(context)
+
+
+@api_view(['POST'])
+def drf_diet_2(request):
+    if request.method == 'POST':
+        print('diet api call ->')
+        cafe1 = get_cafeteria2()
+        version = '2.0'
+        card_list = []
+        simple_image2 = {
+            "simpleImage": {
+                "imageUrl": cafe1.menu_img,
+                "altText": cafe1.title
+            }
+        }
+        card_list.append(simple_image2)
+
+        context = {
+            'version': version,
+            'template': {
+                'outputs': card_list
+            }
+        }
+        print(context)
         return Response(context)
 
 
@@ -183,3 +233,49 @@ def test(request):
         }
     }
     return Response(context)
+
+
+@api_view(['POST'])
+def get_cafeteria_2_crawling(request):
+    cafeteria2 = 'https://www.gist.ac.kr/kr/html/sub05/050602.html'
+    html = requests.get(cafeteria2).text
+    soup = bs(html, 'html.parser')
+    a_list = soup.select('.bd_list_wrap .bd_item_box a')
+    detail_url = cafeteria2 + a_list[0].get('href')
+
+    try:
+        cafeteria_m = CafeteriaMenu.objects.get(post_url=detail_url)
+        return cafeteria_m
+
+    except Exception:
+        pass
+    print("까꿍", detail_url)
+    detail_soup = bs(requests.get(detail_url).text, 'html.parser')
+    title = detail_soup.select_one('.bd_detail_tit h2').text
+    img_src = detail_soup.select_one('.bd_detail_content img').get('src')
+
+    cafeteria_m = CafeteriaMenu.objects.create(menu_img=img_src, title=title, cafeteria=2, post_url=detail_url)
+
+    return Response(200)
+
+
+@api_view(['POST'])
+def get_cafeteria_1_crawling(request):
+    cafeteria1 = 'https://www.gist.ac.kr/kr/html/sub05/050601.html'
+    html = requests.get(cafeteria1).text
+    soup = bs(html, 'html.parser')
+    a_list = soup.select('.bd_list_wrap .bd_item_box a')
+    detail_url = cafeteria1 + a_list[0].get('href')
+
+    try:
+        cafeteria_m = CafeteriaMenu.objects.get(post_url=detail_url)
+        return cafeteria_m
+
+    except Exception:
+        pass
+    detail_soup = bs(requests.get(detail_url).text, 'html.parser')
+    title = detail_soup.select_one('.bd_detail_tit h2').text
+    img_src = detail_soup.select_one('.bd_detail_content img').get('src')
+
+    cafeteria_m = CafeteriaMenu.objects.create(menu_img=img_src, title=title, cafeteria=1, post_url=detail_url)
+    return Response(200)

@@ -3,18 +3,20 @@ from bs4 import BeautifulSoup as bs
 import datetime
 from urllib import parse
 
+from django.utils import timezone
+
 time_mapping = {
     '0': '23',
     '1': '23',
-    '2': '2',
-    '3': '2',
-    '4': '2',
-    '5': '5',
-    '6': '5',
-    '7': '5',
-    '8': '8',
-    '9': '8',
-    '10': '8',
+    '2': '02',
+    '3': '02',
+    '4': '02',
+    '5': '05',
+    '6': '05',
+    '7': '05',
+    '8': '08',
+    '9': '08',
+    '10': '08',
     '11': '11',
     '12': '11',
     '13': '11',
@@ -29,8 +31,8 @@ time_mapping = {
     '22': '22',
     '23': '23',
     '24': '23',
-
 }
+
 data_mapping = {
     'POP': '강수확률',
     'PTY': '강수형태',
@@ -55,10 +57,13 @@ def getVilageFcst():
     base_url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService/getVilageFcst'
     key = 'D6vdl5myJ0a0xl%2FDzf61U3kriBw%2FiCmMqJoIAoJ3Mg4kFkmXD1Wj6WwehGkJFW%2FIXJ4hd6l%2BAlVrB4DXKlsL2w%3D%3D'
 
-    now = datetime.datetime.now()
-    day = str(now.day) if len(str(now.day)) == 2 else '0'+str(now.day)
-    month = str(now.month) if len(str(now.month)) == 2 else '0'+str(now.month)
-    date_now = str(now.year)+month+day
+    now = timezone.now()
+
+    if str(now.hour) == "0" or "1":
+        delta = datetime.timedelta(hours=1)
+        now = now - delta
+
+    date_now = now.strftime("%Y%m%d")
     params = f"serviceKey={key}&numOfRows=10&pageNo=1&base_time={time_mapping[str(now.hour)]}00&base_date={date_now}&nx=58&ny=76"
     query = parse.parse_qs(params)
     url = base_url+"?"+parse.urlencode(query, doseq=True)
@@ -76,16 +81,20 @@ def getUltraSrtNcst():
     base_url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService/getUltraSrtNcst'
     key = 'D6vdl5myJ0a0xl%2FDzf61U3kriBw%2FiCmMqJoIAoJ3Mg4kFkmXD1Wj6WwehGkJFW%2FIXJ4hd6l%2BAlVrB4DXKlsL2w%3D%3D'
 
-    now = datetime.datetime.now()
-    day = str(now.day) if len(str(now.day)) == 2 else '0' + str(now.day)
-    month = str(now.month) if len(str(now.month)) == 2 else '0' + str(now.month)
-    date_now = str(now.year) + month + day
-    base_time = time_mapping[str(now.hour)]
-    params = f"serviceKey={key}&numOfRows=10&pageNo=1&base_time={base_time}00&base_date={date_now}&nx=58&ny=76"
+    now = timezone.now()
+
+    if str(now.hour) == "0" or "1":
+        delta = datetime.timedelta(hours=1)
+        now = now - delta
+
+    date_now = now.strftime("%Y%m%d")
+    params = f"serviceKey={key}&numOfRows=10&pageNo=1&base_time={time_mapping[str(now.hour)]}00&base_date={date_now}&nx=58&ny=76"
     query = parse.parse_qs(params)
     url = base_url + "?" + parse.urlencode(query, doseq=True)
+    print(url)
     html = requests.get(url).text
     soup = bs(html, 'html.parser')
+
     result_data = {}
     for i in soup.select('item'):
         result_data[data_mapping[i.select_one('category').text]] = i.select_one('obsrvalue').text
