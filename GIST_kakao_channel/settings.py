@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'gist_kakao_api.apps.GistKakaoApiConfig',
     'rest_framework',
+    'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'GIST_kakao_channel.urls'
+
+CRONJOBS = [
+    ('22  23  *  *  0', 'gist_kakao_api.cron.get_cafeteria_1_crawling'),
+    ('24  23  *  *  0', 'gist_kakao_api.cron.get_cafeteria_2_crawling')
+
+]
 
 TEMPLATES = [
     {
