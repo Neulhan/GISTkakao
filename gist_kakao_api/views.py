@@ -249,7 +249,7 @@ def get_cafeteria_2_crawling(request):
 
     except Exception:
         pass
-    print("까꿍", detail_url)
+
     detail_soup = bs(requests.get(detail_url).text, 'html.parser')
     title = detail_soup.select_one('.bd_detail_tit h2').text
     img_src = detail_soup.select_one('.bd_detail_content img').get('src')
