@@ -31,7 +31,7 @@ DEBUG = True
 #                  '127.0.0.1',
 #                  "*"
 #                  ]
-ALLOWED_HOSTS = ["13.125.120.214"]
+ALLOWED_HOSTS = ["13.125.120.214", ".ap-northeast-2.compute.amazonaws.com"]
 # Application definition
 
 INSTALLED_APPS = [
