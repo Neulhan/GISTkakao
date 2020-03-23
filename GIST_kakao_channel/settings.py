@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -27,8 +26,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost',
                  '.ap-northeast-2.compute.amazonaws.com',
-                 '.gist-kakao.club']
-
+                 '.gist-kakao.club',
+                 '13.125.172.179'
+                 ]
 
 # Application definition
 
@@ -58,8 +58,7 @@ ROOT_URLCONF = 'GIST_kakao_channel.urls'
 
 CRONJOBS = [
     ('22  23  *  *  0', 'gist_kakao_api.cron.get_cafeteria_1_crawling'),
-    ('24  23  *  *  0', 'gist_kakao_api.cron.get_cafeteria_2_crawling')
-
+    ('24  23  *  *  0', 'gist_kakao_api.cron.get_cafeteria_2_crawling'),
 ]
 
 TEMPLATES = [
@@ -80,7 +79,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'GIST_kakao_channel.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -111,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -136,7 +133,6 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 
 MEDIA_URL = '/media/'
 
