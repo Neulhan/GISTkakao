@@ -100,15 +100,15 @@ def drf_weather(request):
              '강수확률': '0', '하늘상태': '1', '3시간 기온': '3'}
 
         try:
-            text = f"오늘의 GIST 날씨\n 기온 : {weather_data['기온']}\n습도 : {weather_data['습도']}"
+            text = "오늘의 GIST 날씨\n 기온 : {}\n습도 : {}".format(weather_data['기온'], weather_data['습도'])
         except KeyError as e:
             print(KeyError)
-            text = f"오늘의 GIST 날씨\n 기온 : {weather_data['3시간 기온']}\n습도 : {weather_data['습도']}"
+            text = "오늘의 GIST 날씨\n 기온 : {}\n습도 : {}".format(weather_data['3시간 기온'], weather_data['습도'])
 
         if weather_data['강수형태'] == '1':
-            rain_text = f"\n현재날씨 : 비"
+            rain_text = "\n현재날씨 : 비"
         else:
-            rain_text = f"\n강수확률 : {weather_data['강수확률']}"
+            rain_text = "\n강수확률 : {}".format(weather_data['강수확률'])
         text += rain_text
         simple_text = {
                 "simpleText": {
@@ -195,7 +195,6 @@ def drf_diet_2(request):
                 'outputs': card_list
             }
         }
-        print(context)
         return Response(context)
 
 
