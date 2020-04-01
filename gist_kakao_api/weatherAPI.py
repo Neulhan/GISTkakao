@@ -64,7 +64,7 @@ def getVilageFcst():
         now = now - delta
 
     date_now = now.strftime("%Y%m%d")
-    params = f"serviceKey={}&numOfRows=10&pageNo=1&base_time={}00&base_date={}&nx=58&ny=76".format(
+    params = "serviceKey={}&numOfRows=10&pageNo=1&base_time={}00&base_date={}&nx=58&ny=76".format(
         key,
         time_mapping[str(now.hour)],
         date_now
