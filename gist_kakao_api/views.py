@@ -212,7 +212,7 @@ def test(request):
     card_list = []
     simple_text = {
         "simpleText": {
-            "text": f"""
+            "text": """
             국어: {korean}
             수학: {math}
             영어: {english}
@@ -220,7 +220,7 @@ def test(request):
             탐구2: {science2}
             총합: {korean+math+english+science1+science2})
             합격여부: 합격
-            """
+            """.format(korean, math, english, science1, science2, korean+math+english+science1+science2)
         }
     }
     card_list.append(simple_text)
