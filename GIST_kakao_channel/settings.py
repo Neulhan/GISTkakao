@@ -31,7 +31,7 @@ DEBUG = True
 #                  '127.0.0.1',
 #                  "*"
 #                  ]
-ALLOWED_HOSTS = ["13.125.120.214", '.gist-kakao.club', ".ap-northeast-2.compute.amazonaws.com"]
+ALLOWED_HOSTS = ["222.237.78.242", "13.125.120.214", '.gist-kakao.club', ".ap-northeast-2.compute.amazonaws.com"]
 # Application definition
 
 INSTALLED_APPS = [

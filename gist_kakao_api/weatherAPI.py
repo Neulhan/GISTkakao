@@ -64,7 +64,11 @@ def getVilageFcst():
         now = now - delta
 
     date_now = now.strftime("%Y%m%d")
-    params = f"serviceKey={key}&numOfRows=10&pageNo=1&base_time={time_mapping[str(now.hour)]}00&base_date={date_now}&nx=58&ny=76"
+    params = f"serviceKey={}&numOfRows=10&pageNo=1&base_time={}00&base_date={}&nx=58&ny=76".format(
+        key,
+        time_mapping[str(now.hour)],
+        date_now
+    )
     query = parse.parse_qs(params)
     url = base_url+"?"+parse.urlencode(query, doseq=True)
 
@@ -88,7 +92,11 @@ def getUltraSrtNcst():
         now = now - delta
 
     date_now = now.strftime("%Y%m%d")
-    params = f"serviceKey={key}&numOfRows=10&pageNo=1&base_time={time_mapping[str(now.hour)]}00&base_date={date_now}&nx=58&ny=76"
+    params = "serviceKey={}&numOfRows=10&pageNo=1&base_time={}00&base_date={}&nx=58&ny=76".format(
+        key,
+        time_mapping[str(now.hour)],
+        date_now
+    )
     query = parse.parse_qs(params)
     url = base_url + "?" + parse.urlencode(query, doseq=True)
     print(url)
