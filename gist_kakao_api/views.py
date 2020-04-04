@@ -1,15 +1,18 @@
-from django.http import HttpResponse
 from django.shortcuts import render
-
 # Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from datetime import datetime as _datetime
 from gist_kakao_api.dietAPI import get_cafeteria1, get_cafeteria2
 from gist_kakao_api.models import CafeteriaMenu
 from gist_kakao_api.weatherAPI import *
+import pytz
 
 API_END_POINT = 'https://m14fvnt238.execute-api.ap-northeast-2.amazonaws.com/dev10'
+SNOW_URL = "https://github.com/Neulhan/image-serving/blob/master/4.jpg?raw=true"
+SUNNY_URL = "https://github.com/Neulhan/image-serving/blob/master/5.jpg?raw=true"
+RAINY_URL = "https://github.com/Neulhan/image-serving/blob/master/6.jpg?raw=true"
+CLOUDY_URL = "https://github.com/Neulhan/image-serving/blob/master/7.jpg?raw=true"
 
 
 def test_img(request):
@@ -100,23 +103,45 @@ def drf_weather(request):
              '강수확률': '0', '하늘상태': '1', '3시간 기온': '3'}
 
         try:
-            text = "오늘의 GIST 날씨\n 기온 : {}\n습도 : {}".format(weather_data['기온'], weather_data['습도'])
+            temperature_text = "오늘의 GIST 날씨\n 기온 : {}\n습도 : {}".format(weather_data['기온'], weather_data['습도'])
         except KeyError as e:
             print(KeyError)
-            text = "오늘의 GIST 날씨\n 기온 : {}\n습도 : {}".format(weather_data['3시간 기온'], weather_data['습도'])
+            temperature_text = "오늘의 GIST 날씨\n 기온 : {}\n습도 : {}".format(weather_data['3시간 기온'], weather_data['습도'])
 
-        if weather_data['강수형태'] == '1':
-            rain_text = "\n현재날씨 : 비"
+        if weather_data.get('하늘상태', None) == "1":
+            weather_image = SUNNY_URL
+            sky_text = "\n날씨: 맑음"
+        elif weather_data.get('하늘상태', None) == "3" or "4":
+            weather_image = CLOUDY_URL
+            sky_text = "\n날씨: 흐림"
+        elif weather_data['강수형태'] == '1' or '4':
+            weather_image = RAINY_URL
+            sky_text = "\n현재날씨 : 비"
+        elif weather_data['강수형태'] == "2" or "3":
+            weather_image = SNOW_URL
+            sky_text = "\n날씨: 눈"
         else:
-            rain_text = "\n강수확률 : {}".format(weather_data['강수확률'])
-        text += rain_text
-        simple_text = {
-                "simpleText": {
-                    "text": text
-                }
-        }
-        card_list.append(simple_text)
+            weather_image = CLOUDY_URL
+            sky_text = "\n날씨 : 비({}%)".format(weather_data['강수확률'])
 
+        image_card = {
+            "basicCard": {
+                "title": "지금 우리학교 날씨는",
+                "description": temperature_text + sky_text,
+                "thumbnail": {
+                    "imageUrl": weather_image
+                },
+                "buttons": [
+                    {
+                        "action": "webLink",
+                        "label": "자세히 보러가기",
+                        "webLinkUrl": "https://weather.naver.com/"
+                    }
+                ]
+            }
+        }
+
+        card_list.append(image_card)
         context = {
             'version': version,
             'template': {
@@ -131,12 +156,25 @@ def drf_schedule(request):
     if request.method == 'POST':
         version = '2.0'
         card_list = []
-        simple_text = {
-            "simpleText": {
-                "text": "3월\n03-01(일)삼일절\n03-09(월) ~ 03-10(화)2020학년도 봄학기 GIST대학 신입생 수강신청\n03-09(월) ~ 03-12(목)GIST대학 신입생 오리엔테이션\n03-09(월) ~ 03-10(화)2020학년도 봄학기 대학원 신입생 수강신청\n03-13(금)봄학기 개강\n03-13(금) ~ 03-26(목)봄학기 수강신청 변경\n03-13(금)GIST대학 부전공 선언 및 취소 마감\n03-26(목)봄학기 개설교과목 변경(안) 제출마감\n03-31(화)봄학기 대학원 학위논문계획서 제출마감"
-            }
-        }
-        card_list.append(simple_text)
+
+        html = requests.get("https://www.gist.ac.kr/kr/html/sub05/0501.html").text
+        soup = bs(html, 'html.parser')
+        schedule = soup.select(".schlst")
+        schedule_text = ""
+        for i in schedule[_datetime.now(pytz.timezone('Asia/Seoul')).month - 1].select_one("ul").select("li"):
+            schedule_text += "{} {}\n".format(i.select_one("b").text, i.select_one("span").text)
+        #
+        # schedule_text = cache.get('schedule_text')
+        # if schedule_text is None:
+        #     html = requests.get("https://www.gist.ac.kr/kr/html/sub05/0501.html").text
+        #     soup = bs(html, 'html.parser')
+        #     schedule = soup.select(".schlst")
+        #     schedule_text = ""
+        #     for i in schedule[_datetime.now(pytz.timezone('Asia/Seoul')).month - 1].select_one("ul").select("li"):
+        #         schedule_text += "{} {}\n".format(i.select_one("b").text, i.select_one("span").text)
+        #     cache.set('schedule_text', schedule_text)
+
+        card_list.append(schedule_text)
 
         context = {
             'version': version,
@@ -213,14 +251,14 @@ def test(request):
     simple_text = {
         "simpleText": {
             "text": """
-            국어: {korean}
-            수학: {math}
-            영어: {english}
-            탐구1: {science1}
-            탐구2: {science2}
-            총합: {korean+math+english+science1+science2})
+            국어: {}
+            수학: {}
+            영어: {}
+            탐구1: {}
+            탐구2: {}
+            총합: {)
             합격여부: 합격
-            """.format(korean, math, english, science1, science2, korean+math+english+science1+science2)
+            """.format(korean, math, english, science1, science2, korean + math + english + science1 + science2)
         }
     }
     card_list.append(simple_text)

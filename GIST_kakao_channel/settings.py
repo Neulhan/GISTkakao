@@ -31,7 +31,7 @@ DEBUG = True
 #                  '127.0.0.1',
 #                  "*"
 #                  ]
-ALLOWED_HOSTS = ["222.237.78.242", "13.125.120.214", '.gist-kakao.club', ".ap-northeast-2.compute.amazonaws.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "222.237.78.242", "13.125.120.214", '.gist-kakao.club', ".ap-northeast-2.compute.amazonaws.com"]
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'gist_kakao_api.apps.GistKakaoApiConfig',
     'rest_framework',
-    'django_crontab'
+    'django_crontab',
+    # 'django_redis'
 ]
 
 MIDDLEWARE = [
@@ -139,3 +140,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+#
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/5",  # 1번 DB
+#         'TIMEOUT': 86400,
+#
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }
+
