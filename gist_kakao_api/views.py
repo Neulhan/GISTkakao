@@ -148,6 +148,7 @@ def drf_weather(request):
                 'outputs': card_list
             }
         }
+
         return Response(context)
 
 
@@ -173,8 +174,12 @@ def drf_schedule(request):
         #     for i in schedule[_datetime.now(pytz.timezone('Asia/Seoul')).month - 1].select_one("ul").select("li"):
         #         schedule_text += "{} {}\n".format(i.select_one("b").text, i.select_one("span").text)
         #     cache.set('schedule_text', schedule_text)
-
-        card_list.append(schedule_text)
+        simple_text = {
+            "simpleText": {
+                "text": schedule_text
+            }
+        }
+        card_list.append(simple_text)
 
         context = {
             'version': version,
