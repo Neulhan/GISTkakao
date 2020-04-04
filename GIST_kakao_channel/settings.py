@@ -60,8 +60,10 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'GIST_kakao_channel.urls'
 
 CRONJOBS = [
-    ('22  23  *  *  0', 'gist_kakao_api.cron.get_cafeteria_1_crawling'),
-    ('24  23  *  *  0', 'gist_kakao_api.cron.get_cafeteria_2_crawling'),
+    ('*/30  *  *  *  0,1', 'gist_kakao_api.cron.get_cafeteria_1_crawling'),
+    ('*/30  *  *  *  0,1', 'gist_kakao_api.cron.get_cafeteria_2_crawling'),
+    # ('*/2  *  *  *  *', 'gist_kakao_api.cron.print1'),
+    # ('*/2  *  *  *  *', 'gist_kakao_api.cron.print2'),
 ]
 
 TEMPLATES = [

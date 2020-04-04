@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup as bs
+from django.utils import timezone
 
+import os
 from gist_kakao_api.models import CafeteriaMenu
 
 
@@ -45,3 +47,12 @@ def get_cafeteria_1_crawling():
 
     cafeteria_m = CafeteriaMenu.objects.create(menu_img=img_src, title=title, cafeteria=1, post_url=detail_url)
     return 0
+
+
+def print1():
+
+    os.system("echo '1111111111{}' >> /home/neulhan/1.txt".format(timezone.now()))
+
+
+def print2():
+    os.system("echo '2222222222' >> 1.txt")
